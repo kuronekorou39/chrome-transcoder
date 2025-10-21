@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unicode Tool</title>
+  <style>
+    body {
+      font-family: "Segoe UI", "Meiryo", sans-serif;
+      background-color: #fafafa;
+      margin: 0;
+      padding: 16px;
+      color: #333;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: #0078d4;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      margin: 0.8rem 0 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #444;
+    }
+
+    select, textarea, button {
+      width: 100%;
+      font-size: 0.95rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 0.5rem 0.6rem;
+      box-sizing: border-box;
+      transition: 0.2s;
+    }
+
+    select:focus, textarea:focus, button:focus {
+      outline: none;
+      border-color: #0078d4;
+      box-shadow: 0 0 3px rgba(0,120,212,0.3);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin: 1rem 0;
+    }
+
+    button {
+      flex: 1;
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 0.6rem;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    #output {
+      background-color: #f3f3f3;
+      font-family: "Consolas", "Courier New", monospace;
+      white-space: pre-wrap;
+    }
+
+    footer {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Unicode Tool</h1>
+
+  <label for="encodeMode">モード</label>
+  <select id="encodeMode">
+    <option value="unicode-escape">Unicode Escape</option>
+    <option value="utf8-bytes">UTF-8 Bytes</option>
+  </select>
+
+  <label for="input">入力テキスト</label>
+  <textarea id="input" placeholder="文字列を入力してください"></textarea>
+
+  <label for="charset">文字セット</label>
+  <select id="charset">
+    <option value="utf-8">UTF-8</option>
+    <option value="shift-jis">Shift-JIS</option>
+    <option value="euc-jp">EUC-JP</option>
+  </select>
+
+  <div class="actions">
+    <button id="encodeBtn">Encode</button>
+    <button id="decodeBtn">Decode</button>
+  </div>
+
+  <label for="output">結果</label>
+  <textarea id="output" placeholder="ここに結果が表示されます" readonly></textarea>
+
+  <footer>© 2025 Unicode Tool</footer>
+
+  <script src="panel.js"></script>
+</body>
+</html>

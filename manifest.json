@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Unicode Tool",
+  "version": "1.0",
+  "description": "Encode/Decode Unicode text in browser side panel",
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "permissions": ["sidePanel"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "panel.html"
+  },
+  "action": {
+    "default_title": "Unicode Tool"
+  }
+}
