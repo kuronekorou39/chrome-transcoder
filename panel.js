@@ -25,7 +25,70 @@ document.addEventListener("DOMContentLoaded", () => {
   initHTML();
   initJSON();
   initHex();
+  initOutputControls();
 });
+
+// ======================
+// Output Controls (Copy & Reflect)
+// ======================
+function initOutputControls() {
+  // Copy button functionality
+  document.querySelectorAll("[data-copy]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const outputId = btn.getAttribute("data-copy");
+      const outputElement = document.getElementById(outputId);
+      const text = outputElement.textContent;
+
+      if (!text || text === "ここに結果が表示されます") {
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+
+        // Visual feedback
+        const originalText = btn.textContent;
+        btn.textContent = "✓";
+        btn.classList.add("copied");
+
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.classList.remove("copied");
+        }, 1000);
+      } catch (e) {
+        console.error("Copy failed:", e);
+        btn.textContent = "✗";
+        setTimeout(() => {
+          btn.textContent = "📋";
+        }, 1000);
+      }
+    });
+  });
+
+  // Reflect button functionality
+  document.querySelectorAll("[data-reflect]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tabName = btn.getAttribute("data-reflect");
+      const outputElement = document.getElementById(`${tabName}-output`);
+      const inputElement = document.getElementById(`${tabName}-input`);
+      const text = outputElement.textContent;
+
+      if (!text || text === "ここに結果が表示されます") {
+        return;
+      }
+
+      inputElement.value = text;
+
+      // Visual feedback
+      const originalText = btn.textContent;
+      btn.textContent = "✓";
+
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 800);
+    });
+  });
+}
 
 // ======================
 // Unicode Functions

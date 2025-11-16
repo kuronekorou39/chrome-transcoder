@@ -148,6 +148,49 @@
       overflow-y: auto;
     }
 
+    .output-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0.8rem 0 0.4rem;
+    }
+
+    .output-label-row label {
+      margin: 0;
+    }
+
+    .output-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      background-color: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 4px 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      line-height: 1;
+    }
+
+    .icon-btn:hover {
+      background-color: #e8f4ff;
+      border-color: #0078d4;
+      transform: scale(1.1);
+    }
+
+    .icon-btn:active {
+      transform: scale(0.95);
+    }
+
+    .icon-btn.copied {
+      background-color: #e8f5e9;
+    }
+
     footer {
       margin-top: 1.5rem;
       padding: 12px;
@@ -235,7 +278,13 @@
         <button id="unicode-decode">Decode</button>
       </div>
 
-      <label>結果</label>
+      <div class="output-label-row">
+        <label>結果</label>
+        <div class="output-controls">
+          <button class="icon-btn" data-copy="unicode-output" title="コピー">📋</button>
+          <button class="icon-btn" data-reflect="unicode" title="入力欄に反映">⤴️</button>
+        </div>
+      </div>
       <div class="output-area" id="unicode-output">ここに結果が表示されます</div>
       <p class="info">※ 「ASCII以外」を選択すると、半角英数字・記号はそのまま残ります</p>
     </div>
@@ -250,7 +299,13 @@
         <button id="url-decode">URL Decode</button>
       </div>
 
-      <label>結果</label>
+      <div class="output-label-row">
+        <label>結果</label>
+        <div class="output-controls">
+          <button class="icon-btn" data-copy="url-output" title="コピー">📋</button>
+          <button class="icon-btn" data-reflect="url" title="入力欄に反映">⤴️</button>
+        </div>
+      </div>
       <div class="output-area" id="url-output">ここに結果が表示されます</div>
       <p class="info">※ encodeURIComponent / decodeURIComponent を使用</p>
     </div>
@@ -265,7 +320,13 @@
         <button id="base64-decode">Base64 Decode</button>
       </div>
 
-      <label>結果</label>
+      <div class="output-label-row">
+        <label>結果</label>
+        <div class="output-controls">
+          <button class="icon-btn" data-copy="base64-output" title="コピー">📋</button>
+          <button class="icon-btn" data-reflect="base64" title="入力欄に反映">⤴️</button>
+        </div>
+      </div>
       <div class="output-area" id="base64-output">ここに結果が表示されます</div>
       <p class="info">※ UTF-8でエンコード/デコード</p>
     </div>
@@ -280,7 +341,13 @@
         <button id="html-decode">HTML Decode</button>
       </div>
 
-      <label>結果</label>
+      <div class="output-label-row">
+        <label>結果</label>
+        <div class="output-controls">
+          <button class="icon-btn" data-copy="html-output" title="コピー">📋</button>
+          <button class="icon-btn" data-reflect="html" title="入力欄に反映">⤴️</button>
+        </div>
+      </div>
       <div class="output-area" id="html-output">ここに結果が表示されます</div>
       <p class="info">※ &lt;, &gt;, &amp;, &quot;, &#XXXX; などを変換</p>
     </div>
@@ -296,7 +363,13 @@
         <button id="json-escape">JSON文字列エスケープ</button>
       </div>
 
-      <label>結果</label>
+      <div class="output-label-row">
+        <label>結果</label>
+        <div class="output-controls">
+          <button class="icon-btn" data-copy="json-output" title="コピー">📋</button>
+          <button class="icon-btn" data-reflect="json" title="入力欄に反映">⤴️</button>
+        </div>
+      </div>
       <div class="output-area" id="json-output">ここに結果が表示されます</div>
       <p class="info">※ JSON整形、圧縮、文字列エスケープに対応</p>
     </div>
@@ -319,7 +392,13 @@
         <button id="hex-decode">Hex Decode</button>
       </div>
 
-      <label>結果</label>
+      <div class="output-label-row">
+        <label>結果</label>
+        <div class="output-controls">
+          <button class="icon-btn" data-copy="hex-output" title="コピー">📋</button>
+          <button class="icon-btn" data-reflect="hex" title="入力欄に反映">⤴️</button>
+        </div>
+      </div>
       <div class="output-area" id="hex-output">ここに結果が表示されます</div>
       <p class="info">※ UTF-8バイトを16進数で表現</p>
     </div>
