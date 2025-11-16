@@ -3,22 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unicode Tool</title>
+  <title>Multi Encoder/Decoder</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: "Segoe UI", "Meiryo", sans-serif;
       background-color: #fafafa;
       margin: 0;
-      padding: 16px;
+      padding: 0;
       color: #333;
     }
 
-    h1 {
-      font-size: 1.3rem;
-      margin-bottom: 1rem;
-      color: #0078d4;
-      text-align: left;
+    header {
+      background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+      color: white;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      margin: 0;
       font-weight: 600;
+    }
+
+    .tabs {
+      display: flex;
+      background-color: #fff;
+      border-bottom: 2px solid #e0e0e0;
+      overflow-x: auto;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    .tab {
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .tab:hover {
+      background-color: #f5f5f5;
+      color: #0078d4;
+    }
+
+    .tab.active {
+      color: #0078d4;
+      border-bottom-color: #0078d4;
+      background-color: #fafafa;
+    }
+
+    .content {
+      padding: 16px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
     }
 
     label {
@@ -29,17 +81,17 @@
       color: #444;
     }
 
-    select, textarea, button {
+    select, textarea {
       width: 100%;
       font-size: 0.95rem;
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 0.5rem 0.6rem;
-      box-sizing: border-box;
       transition: 0.2s;
+      font-family: inherit;
     }
 
-    select:focus, textarea:focus, button:focus {
+    select:focus, textarea:focus {
       outline: none;
       border-color: #0078d4;
       box-shadow: 0 0 3px rgba(0,120,212,0.3);
@@ -48,11 +100,11 @@
     textarea {
       min-height: 80px;
       resize: vertical;
+      font-family: "Consolas", "Courier New", monospace;
     }
 
     .actions {
       display: flex;
-      justify-content: space-between;
       gap: 0.8rem;
       margin: 1rem 0;
     }
@@ -65,7 +117,8 @@
       cursor: pointer;
       font-weight: 600;
       border-radius: 8px;
-      padding: 0.6rem;
+      padding: 0.7rem;
+      font-size: 0.95rem;
       transition: background 0.2s, transform 0.1s;
     }
 
@@ -77,49 +130,202 @@
       transform: scale(0.97);
     }
 
-    #output {
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .output-area {
       background-color: #f3f3f3;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 0.6rem;
       font-family: "Consolas", "Courier New", monospace;
       white-space: pre-wrap;
+      word-break: break-all;
+      min-height: 80px;
+      max-height: 200px;
+      overflow-y: auto;
     }
 
     footer {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
+      padding: 12px;
       text-align: center;
       font-size: 0.8rem;
       color: #888;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .info {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 0.5rem;
+      font-style: italic;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .option-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .option-group label {
+      margin: 0 0 0.4rem 0;
     }
   </style>
 </head>
 
 <body>
-  <h1>Unicode Tool</h1>
+  <header>
+    <h1>Multi Encoder/Decoder</h1>
+  </header>
 
-  <label for="encodeMode">モード</label>
-  <select id="encodeMode">
-    <option value="unicode-escape">Unicode Escape</option>
-    <option value="utf8-bytes">UTF-8 Bytes</option>
-  </select>
+  <nav class="tabs">
+    <div class="tab active" data-tab="unicode">Unicode</div>
+    <div class="tab" data-tab="url">URL</div>
+    <div class="tab" data-tab="base64">Base64</div>
+    <div class="tab" data-tab="html">HTML Entities</div>
+    <div class="tab" data-tab="json">JSON</div>
+    <div class="tab" data-tab="hex">Hex</div>
+  </nav>
 
-  <label for="input">入力テキスト</label>
-  <textarea id="input" placeholder="文字列を入力してください"></textarea>
+  <div class="content">
+    <!-- Unicode Tab -->
+    <div class="tab-panel active" id="unicode">
+      <div class="options-grid">
+        <div class="option-group">
+          <label for="unicode-mode">エンコードモード</label>
+          <select id="unicode-mode">
+            <option value="unicode-escape">Unicode Escape (\uXXXX)</option>
+            <option value="utf8-bytes">UTF-8 Bytes (\xHH)</option>
+          </select>
+        </div>
 
-  <label for="charset">文字セット</label>
-  <select id="charset">
-    <option value="utf-8">UTF-8</option>
-    <option value="shift-jis">Shift-JIS</option>
-    <option value="euc-jp">EUC-JP</option>
-  </select>
+        <div class="option-group">
+          <label for="unicode-target">エンコード対象</label>
+          <select id="unicode-target">
+            <option value="all">すべての文字</option>
+            <option value="non-ascii" selected>ASCII以外 (日本語など)</option>
+            <option value="japanese">日本語のみ</option>
+            <option value="multibyte">マルチバイト文字</option>
+            <option value="non-alnum">英数字以外</option>
+          </select>
+        </div>
+      </div>
 
-  <div class="actions">
-    <button id="encodeBtn">Encode</button>
-    <button id="decodeBtn">Decode</button>
+      <label for="unicode-input">入力テキスト</label>
+      <textarea id="unicode-input" placeholder="文字列を入力してください (例: Hello 世界)"></textarea>
+
+      <label for="unicode-charset">文字セット (バイトモード用)</label>
+      <select id="unicode-charset">
+        <option value="utf-8">UTF-8</option>
+        <option value="shift-jis">Shift-JIS</option>
+        <option value="euc-jp">EUC-JP</option>
+      </select>
+
+      <div class="actions">
+        <button id="unicode-encode">Encode</button>
+        <button id="unicode-decode">Decode</button>
+      </div>
+
+      <label>結果</label>
+      <div class="output-area" id="unicode-output">ここに結果が表示されます</div>
+      <p class="info">※ 「ASCII以外」を選択すると、半角英数字・記号はそのまま残ります</p>
+    </div>
+
+    <!-- URL Tab -->
+    <div class="tab-panel" id="url">
+      <label for="url-input">入力テキスト</label>
+      <textarea id="url-input" placeholder="URLまたはテキストを入力"></textarea>
+
+      <div class="actions">
+        <button id="url-encode">URL Encode</button>
+        <button id="url-decode">URL Decode</button>
+      </div>
+
+      <label>結果</label>
+      <div class="output-area" id="url-output">ここに結果が表示されます</div>
+      <p class="info">※ encodeURIComponent / decodeURIComponent を使用</p>
+    </div>
+
+    <!-- Base64 Tab -->
+    <div class="tab-panel" id="base64">
+      <label for="base64-input">入力テキスト</label>
+      <textarea id="base64-input" placeholder="テキストまたはBase64文字列を入力"></textarea>
+
+      <div class="actions">
+        <button id="base64-encode">Base64 Encode</button>
+        <button id="base64-decode">Base64 Decode</button>
+      </div>
+
+      <label>結果</label>
+      <div class="output-area" id="base64-output">ここに結果が表示されます</div>
+      <p class="info">※ UTF-8でエンコード/デコード</p>
+    </div>
+
+    <!-- HTML Entities Tab -->
+    <div class="tab-panel" id="html">
+      <label for="html-input">入力テキスト</label>
+      <textarea id="html-input" placeholder="HTMLテキストまたはエンティティを入力"></textarea>
+
+      <div class="actions">
+        <button id="html-encode">HTML Encode</button>
+        <button id="html-decode">HTML Decode</button>
+      </div>
+
+      <label>結果</label>
+      <div class="output-area" id="html-output">ここに結果が表示されます</div>
+      <p class="info">※ &lt;, &gt;, &amp;, &quot;, &#XXXX; などを変換</p>
+    </div>
+
+    <!-- JSON Tab -->
+    <div class="tab-panel" id="json">
+      <label for="json-input">入力テキスト</label>
+      <textarea id="json-input" placeholder="JSON文字列を入力"></textarea>
+
+      <div class="actions">
+        <button id="json-format">フォーマット (整形)</button>
+        <button id="json-minify">ミニファイ (圧縮)</button>
+        <button id="json-escape">JSON文字列エスケープ</button>
+      </div>
+
+      <label>結果</label>
+      <div class="output-area" id="json-output">ここに結果が表示されます</div>
+      <p class="info">※ JSON整形、圧縮、文字列エスケープに対応</p>
+    </div>
+
+    <!-- Hex Tab -->
+    <div class="tab-panel" id="hex">
+      <label for="hex-input">入力テキスト</label>
+      <textarea id="hex-input" placeholder="テキストまたは16進数文字列を入力"></textarea>
+
+      <label for="hex-delimiter">区切り文字</label>
+      <select id="hex-delimiter">
+        <option value="">なし (616263...)</option>
+        <option value=" ">スペース (61 62 63...)</option>
+        <option value=":">コロン (61:62:63...)</option>
+        <option value="-">ハイフン (61-62-63...)</option>
+      </select>
+
+      <div class="actions">
+        <button id="hex-encode">Hex Encode</button>
+        <button id="hex-decode">Hex Decode</button>
+      </div>
+
+      <label>結果</label>
+      <div class="output-area" id="hex-output">ここに結果が表示されます</div>
+      <p class="info">※ UTF-8バイトを16進数で表現</p>
+    </div>
   </div>
 
-  <label for="output">結果</label>
-  <textarea id="output" placeholder="ここに結果が表示されます" readonly></textarea>
-
-  <footer>© 2025 Unicode Tool</footer>
+  <footer>© 2025 Multi Encoder/Decoder</footer>
 
   <script src="panel.js"></script>
 </body>

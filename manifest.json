@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Unicode Tool",
-  "version": "1.0",
-  "description": "Encode/Decode Unicode text in browser side panel",
+  "name": "Multi Encoder/Decoder",
+  "version": "2.0",
+  "description": "多機能なエンコード/デコードツール (Unicode, URL, Base64, HTMLなど)",
   "icons": {
     "16": "icon.png",
     "48": "icon.png",
@@ -16,6 +16,6 @@
     "default_path": "panel.html"
   },
   "action": {
-    "default_title": "Unicode Tool"
+    "default_title": "Multi Encoder/Decoder"
   }
 }
