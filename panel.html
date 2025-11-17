@@ -161,24 +161,29 @@
       padding: 4px 6px;
       cursor: pointer;
       font-size: 1rem;
-      transition: all 0.2s;
+      transition: all 0.15s ease;
       display: flex;
       align-items: center;
+      justify-content: center;
       line-height: 1;
+      min-width: 32px;
+      min-height: 28px;
     }
 
     .icon-btn:hover {
       background-color: #e8f4ff;
       border-color: #0078d4;
-      transform: scale(1.1);
     }
 
     .icon-btn:active {
-      transform: scale(0.95);
+      background-color: #d0e8ff;
+      transform: scale(0.97);
     }
 
-    .icon-btn.copied {
-      background-color: #e8f5e9;
+    .icon-btn.success {
+      background-color: #4caf50;
+      color: white;
+      border-color: #4caf50;
     }
 
 
@@ -197,6 +202,8 @@
     <div class="tab" data-tab="base64">Base64</div>
     <div class="tab" data-tab="html">HTML Entities</div>
     <div class="tab" data-tab="json">JSON</div>
+    <div class="tab" data-tab="jwt">JWT</div>
+    <div class="tab" data-tab="hash">Hash</div>
     <div class="tab" data-tab="hex">Hex</div>
   </nav>
 
@@ -315,6 +322,45 @@
         </div>
       </div>
       <div class="output-area" id="json-output">結果がここに表示されます</div>
+    </div>
+
+    <!-- JWT Tab -->
+    <div class="tab-panel" id="jwt">
+      <textarea id="jwt-input" placeholder="JWTトークンを入力"></textarea>
+
+      <div class="actions">
+        <button id="jwt-decode">Decode</button>
+      </div>
+
+      <div class="output-label-row">
+        <div class="output-controls">
+          <button class="icon-btn" data-copy="jwt-output" title="コピー">📋</button>
+          <button class="icon-btn" data-reflect="jwt" title="入力欄に反映">⤴️</button>
+        </div>
+      </div>
+      <div class="output-area" id="jwt-output">結果がここに表示されます</div>
+    </div>
+
+    <!-- Hash Tab -->
+    <div class="tab-panel" id="hash">
+      <textarea id="hash-input" placeholder="ハッシュ化するテキストを入力"></textarea>
+
+      <select id="hash-algorithm">
+        <option value="sha256">SHA-256 (推奨)</option>
+        <option value="sha1">SHA-1</option>
+        <option value="md5">MD5 (非推奨)</option>
+      </select>
+
+      <div class="actions">
+        <button id="hash-generate">Generate Hash</button>
+      </div>
+
+      <div class="output-label-row">
+        <div class="output-controls">
+          <button class="icon-btn" data-copy="hash-output" title="コピー">📋</button>
+        </div>
+      </div>
+      <div class="output-area" id="hash-output">結果がここに表示されます</div>
     </div>
 
     <!-- Hex Tab -->
