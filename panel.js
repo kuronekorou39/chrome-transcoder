@@ -39,7 +39,7 @@ function initOutputControls() {
       const outputElement = document.getElementById(outputId);
       const text = outputElement.textContent;
 
-      if (!text || text === "ここに結果が表示されます") {
+      if (!text || text === "結果がここに表示されます") {
         return;
       }
 
@@ -73,7 +73,7 @@ function initOutputControls() {
       const inputElement = document.getElementById(`${tabName}-input`);
       const text = outputElement.textContent;
 
-      if (!text || text === "ここに結果が表示されます") {
+      if (!text || text === "結果がここに表示されます") {
         return;
       }
 

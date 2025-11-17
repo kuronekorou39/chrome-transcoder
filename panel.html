@@ -17,29 +17,16 @@
       color: #333;
     }
 
-    header {
-      background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
-      color: white;
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    header h1 {
-      font-size: 1.4rem;
-      margin: 0;
-      font-weight: 600;
-    }
-
     .tabs {
       display: flex;
       background-color: #fff;
       border-bottom: 2px solid #e0e0e0;
       overflow-x: auto;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
 
     .tab {
-      padding: 12px 20px;
+      padding: 14px 24px;
       cursor: pointer;
       font-size: 0.9rem;
       font-weight: 500;
@@ -62,7 +49,9 @@
     }
 
     .content {
-      padding: 16px;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
     }
 
     .tab-panel {
@@ -73,40 +62,35 @@
       display: block;
     }
 
-    label {
-      display: block;
-      margin: 0.8rem 0 0.4rem;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #444;
-    }
-
     select, textarea {
       width: 100%;
       font-size: 0.95rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 0.5rem 0.6rem;
-      transition: 0.2s;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px 12px;
+      transition: border-color 0.2s, box-shadow 0.2s;
       font-family: inherit;
+      background-color: #fff;
+      margin-bottom: 12px;
     }
 
     select:focus, textarea:focus {
       outline: none;
       border-color: #0078d4;
-      box-shadow: 0 0 3px rgba(0,120,212,0.3);
+      box-shadow: 0 0 0 3px rgba(0,120,212,0.1);
     }
 
     textarea {
-      min-height: 80px;
+      min-height: 100px;
       resize: vertical;
       font-family: "Consolas", "Courier New", monospace;
+      line-height: 1.5;
     }
 
     .actions {
       display: flex;
-      gap: 0.8rem;
-      margin: 1rem 0;
+      gap: 10px;
+      margin: 12px 0 16px;
     }
 
     button {
@@ -136,27 +120,25 @@
     }
 
     .output-area {
-      background-color: #f3f3f3;
+      background-color: #f8f9fa;
       border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 0.6rem;
+      border-radius: 6px;
+      padding: 12px;
       font-family: "Consolas", "Courier New", monospace;
       white-space: pre-wrap;
       word-break: break-all;
-      min-height: 80px;
-      max-height: 200px;
+      min-height: 100px;
+      max-height: 250px;
       overflow-y: auto;
+      line-height: 1.6;
+      color: #333;
     }
 
     .output-label-row {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
-      margin: 0.8rem 0 0.4rem;
-    }
-
-    .output-label-row label {
-      margin: 0;
+      margin-bottom: 8px;
     }
 
     .output-controls {
@@ -191,45 +173,21 @@
       background-color: #e8f5e9;
     }
 
-    footer {
-      margin-top: 1.5rem;
-      padding: 12px;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #888;
-      border-top: 1px solid #e0e0e0;
-    }
-
-    .info {
-      font-size: 0.85rem;
-      color: #666;
-      margin-top: 0.5rem;
-      font-style: italic;
-    }
 
     .options-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.8rem;
-      margin-bottom: 0.8rem;
+      gap: 10px;
+      margin-bottom: 12px;
     }
 
-    .option-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .option-group label {
-      margin: 0 0 0.4rem 0;
+    .option-group select {
+      margin-bottom: 0;
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>Multi Encoder/Decoder</h1>
-  </header>
-
   <nav class="tabs">
     <div class="tab active" data-tab="unicode">Unicode</div>
     <div class="tab" data-tab="url">URL</div>
@@ -244,7 +202,6 @@
     <div class="tab-panel active" id="unicode">
       <div class="options-grid">
         <div class="option-group">
-          <label for="unicode-mode">エンコードモード</label>
           <select id="unicode-mode">
             <option value="unicode-escape">Unicode Escape (\uXXXX)</option>
             <option value="utf8-bytes">UTF-8 Bytes (\xHH)</option>
@@ -252,21 +209,18 @@
         </div>
 
         <div class="option-group">
-          <label for="unicode-target">エンコード対象</label>
           <select id="unicode-target">
-            <option value="all">すべての文字</option>
-            <option value="non-ascii" selected>ASCII以外 (日本語など)</option>
+            <option value="all">すべて</option>
+            <option value="non-ascii" selected>ASCII以外</option>
             <option value="japanese">日本語のみ</option>
-            <option value="multibyte">マルチバイト文字</option>
+            <option value="multibyte">マルチバイト</option>
             <option value="non-alnum">英数字以外</option>
           </select>
         </div>
       </div>
 
-      <label for="unicode-input">入力テキスト</label>
-      <textarea id="unicode-input" placeholder="文字列を入力してください (例: Hello 世界)"></textarea>
+      <textarea id="unicode-input" placeholder="テキストを入力 (例: Hello 世界)"></textarea>
 
-      <label for="unicode-charset">文字セット (バイトモード用)</label>
       <select id="unicode-charset">
         <option value="utf-8">UTF-8</option>
         <option value="shift-jis">Shift-JIS</option>
@@ -279,132 +233,112 @@
       </div>
 
       <div class="output-label-row">
-        <label>結果</label>
         <div class="output-controls">
           <button class="icon-btn" data-copy="unicode-output" title="コピー">📋</button>
           <button class="icon-btn" data-reflect="unicode" title="入力欄に反映">⤴️</button>
         </div>
       </div>
-      <div class="output-area" id="unicode-output">ここに結果が表示されます</div>
-      <p class="info">※ 「ASCII以外」を選択すると、半角英数字・記号はそのまま残ります</p>
+      <div class="output-area" id="unicode-output">結果がここに表示されます</div>
     </div>
 
     <!-- URL Tab -->
     <div class="tab-panel" id="url">
-      <label for="url-input">入力テキスト</label>
       <textarea id="url-input" placeholder="URLまたはテキストを入力"></textarea>
 
       <div class="actions">
-        <button id="url-encode">URL Encode</button>
-        <button id="url-decode">URL Decode</button>
+        <button id="url-encode">Encode</button>
+        <button id="url-decode">Decode</button>
       </div>
 
       <div class="output-label-row">
-        <label>結果</label>
         <div class="output-controls">
           <button class="icon-btn" data-copy="url-output" title="コピー">📋</button>
           <button class="icon-btn" data-reflect="url" title="入力欄に反映">⤴️</button>
         </div>
       </div>
-      <div class="output-area" id="url-output">ここに結果が表示されます</div>
-      <p class="info">※ encodeURIComponent / decodeURIComponent を使用</p>
+      <div class="output-area" id="url-output">結果がここに表示されます</div>
     </div>
 
     <!-- Base64 Tab -->
     <div class="tab-panel" id="base64">
-      <label for="base64-input">入力テキスト</label>
       <textarea id="base64-input" placeholder="テキストまたはBase64文字列を入力"></textarea>
 
       <div class="actions">
-        <button id="base64-encode">Base64 Encode</button>
-        <button id="base64-decode">Base64 Decode</button>
+        <button id="base64-encode">Encode</button>
+        <button id="base64-decode">Decode</button>
       </div>
 
       <div class="output-label-row">
-        <label>結果</label>
         <div class="output-controls">
           <button class="icon-btn" data-copy="base64-output" title="コピー">📋</button>
           <button class="icon-btn" data-reflect="base64" title="入力欄に反映">⤴️</button>
         </div>
       </div>
-      <div class="output-area" id="base64-output">ここに結果が表示されます</div>
-      <p class="info">※ UTF-8でエンコード/デコード</p>
+      <div class="output-area" id="base64-output">結果がここに表示されます</div>
     </div>
 
     <!-- HTML Entities Tab -->
     <div class="tab-panel" id="html">
-      <label for="html-input">入力テキスト</label>
-      <textarea id="html-input" placeholder="HTMLテキストまたはエンティティを入力"></textarea>
+      <textarea id="html-input" placeholder="HTMLテキストを入力"></textarea>
 
       <div class="actions">
-        <button id="html-encode">HTML Encode</button>
-        <button id="html-decode">HTML Decode</button>
+        <button id="html-encode">Encode</button>
+        <button id="html-decode">Decode</button>
       </div>
 
       <div class="output-label-row">
-        <label>結果</label>
         <div class="output-controls">
           <button class="icon-btn" data-copy="html-output" title="コピー">📋</button>
           <button class="icon-btn" data-reflect="html" title="入力欄に反映">⤴️</button>
         </div>
       </div>
-      <div class="output-area" id="html-output">ここに結果が表示されます</div>
-      <p class="info">※ &lt;, &gt;, &amp;, &quot;, &#XXXX; などを変換</p>
+      <div class="output-area" id="html-output">結果がここに表示されます</div>
     </div>
 
     <!-- JSON Tab -->
     <div class="tab-panel" id="json">
-      <label for="json-input">入力テキスト</label>
       <textarea id="json-input" placeholder="JSON文字列を入力"></textarea>
 
       <div class="actions">
-        <button id="json-format">フォーマット (整形)</button>
-        <button id="json-minify">ミニファイ (圧縮)</button>
-        <button id="json-escape">JSON文字列エスケープ</button>
+        <button id="json-format">整形</button>
+        <button id="json-minify">圧縮</button>
+        <button id="json-escape">エスケープ</button>
       </div>
 
       <div class="output-label-row">
-        <label>結果</label>
         <div class="output-controls">
           <button class="icon-btn" data-copy="json-output" title="コピー">📋</button>
           <button class="icon-btn" data-reflect="json" title="入力欄に反映">⤴️</button>
         </div>
       </div>
-      <div class="output-area" id="json-output">ここに結果が表示されます</div>
-      <p class="info">※ JSON整形、圧縮、文字列エスケープに対応</p>
+      <div class="output-area" id="json-output">結果がここに表示されます</div>
     </div>
 
     <!-- Hex Tab -->
     <div class="tab-panel" id="hex">
-      <label for="hex-input">入力テキスト</label>
-      <textarea id="hex-input" placeholder="テキストまたは16進数文字列を入力"></textarea>
+      <textarea id="hex-input" placeholder="テキストまたは16進数を入力"></textarea>
 
-      <label for="hex-delimiter">区切り文字</label>
       <select id="hex-delimiter">
-        <option value="">なし (616263...)</option>
-        <option value=" ">スペース (61 62 63...)</option>
-        <option value=":">コロン (61:62:63...)</option>
-        <option value="-">ハイフン (61-62-63...)</option>
+        <option value="">区切りなし</option>
+        <option value=" ">スペース</option>
+        <option value=":">コロン</option>
+        <option value="-">ハイフン</option>
       </select>
 
       <div class="actions">
-        <button id="hex-encode">Hex Encode</button>
-        <button id="hex-decode">Hex Decode</button>
+        <button id="hex-encode">Encode</button>
+        <button id="hex-decode">Decode</button>
       </div>
 
       <div class="output-label-row">
-        <label>結果</label>
         <div class="output-controls">
           <button class="icon-btn" data-copy="hex-output" title="コピー">📋</button>
           <button class="icon-btn" data-reflect="hex" title="入力欄に反映">⤴️</button>
         </div>
       </div>
-      <div class="output-area" id="hex-output">ここに結果が表示されます</div>
-      <p class="info">※ UTF-8バイトを16進数で表現</p>
+      <div class="output-area" id="hex-output">結果がここに表示されます</div>
     </div>
   </div>
-
-  <footer>© 2025 Multi Encoder/Decoder</footer>
 
   <script src="panel.js"></script>
 </body>
