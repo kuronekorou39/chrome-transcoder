@@ -202,31 +202,14 @@
   <div class="content">
     <!-- Unicode Tab -->
     <div class="tab-panel active" id="unicode">
-      <div class="options-grid">
-        <div class="option-group">
-          <select id="unicode-mode">
-            <option value="unicode-escape">Unicode Escape (\uXXXX)</option>
-            <option value="utf8-bytes">UTF-8 Bytes (\xHH)</option>
-          </select>
-        </div>
-
-        <div class="option-group">
-          <select id="unicode-target">
-            <option value="all">すべて</option>
-            <option value="non-ascii" selected>ASCII以外</option>
-            <option value="japanese">日本語のみ</option>
-            <option value="multibyte">マルチバイト</option>
-            <option value="non-alnum">英数字以外</option>
-          </select>
-        </div>
-      </div>
-
       <textarea id="unicode-input" placeholder="テキストを入力 (例: Hello 世界)"></textarea>
 
-      <select id="unicode-charset">
-        <option value="utf-8">UTF-8</option>
-        <option value="shift-jis">Shift-JIS</option>
-        <option value="euc-jp">EUC-JP</option>
+      <select id="unicode-target">
+        <option value="all">すべての文字</option>
+        <option value="non-ascii" selected>ASCII以外</option>
+        <option value="japanese">日本語のみ</option>
+        <option value="multibyte">マルチバイト</option>
+        <option value="non-alnum">英数字以外</option>
       </select>
 
       <div class="actions">

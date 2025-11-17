@@ -96,15 +96,13 @@ function initOutputControls() {
 function initUnicode() {
   const input = document.getElementById("unicode-input");
   const output = document.getElementById("unicode-output");
-  const mode = document.getElementById("unicode-mode");
   const target = document.getElementById("unicode-target");
-  const charset = document.getElementById("unicode-charset");
   const encodeBtn = document.getElementById("unicode-encode");
   const decodeBtn = document.getElementById("unicode-decode");
 
   encodeBtn.addEventListener("click", () => {
     try {
-      output.textContent = encodeUnicode(input.value, mode.value, target.value, charset.value);
+      output.textContent = encodeUnicode(input.value, target.value);
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
     }
@@ -112,14 +110,14 @@ function initUnicode() {
 
   decodeBtn.addEventListener("click", () => {
     try {
-      output.textContent = decodeUnicode(input.value, charset.value);
+      output.textContent = decodeUnicode(input.value);
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
     }
   });
 }
 
-function encodeUnicode(str, mode = "unicode-escape", target = "non-ascii", enc = "utf-8") {
+function encodeUnicode(str, target = "non-ascii") {
   if (!str) return "";
 
   // 文字をエンコードするかどうか判定する関数
@@ -148,21 +146,6 @@ function encodeUnicode(str, mode = "unicode-escape", target = "non-ascii", enc =
     }
   }
 
-  if (mode === "utf8-bytes") {
-    // バイトモードの場合、文字単位で判定してエンコード
-    let result = "";
-    for (const char of str) {
-      if (shouldEncode(char)) {
-        const encoder = new TextEncoder();
-        const bytes = encoder.encode(char);
-        result += Array.from(bytes).map(b => "\\x" + b.toString(16).padStart(2, "0")).join("");
-      } else {
-        result += char;
-      }
-    }
-    return result;
-  }
-
   // unicode-escape: 文字単位でエンコードするか判定
   let out = "";
   for (const cp of str) {
@@ -181,9 +164,10 @@ function encodeUnicode(str, mode = "unicode-escape", target = "non-ascii", enc =
   return out;
 }
 
-function decodeUnicode(text, enc = "utf-8") {
+function decodeUnicode(text) {
   if (!text) return "";
 
+  // \u{XXXXX} 形式をデコード
   let replaced = text.replace(/\\u\{([0-9a-fA-F]+)\}/g, (_, hex) => {
     try {
       return String.fromCodePoint(parseInt(hex, 16));
@@ -192,22 +176,9 @@ function decodeUnicode(text, enc = "utf-8") {
     }
   });
 
+  // \uXXXX 形式をデコード
   replaced = replaced.replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => {
     return String.fromCharCode(parseInt(hex, 16));
-  });
-
-  replaced = replaced.replace(/(?:\\x[0-9a-fA-F]{2})+/g, (m) => {
-    const bytes = [];
-    const hexes = m.match(/\\x([0-9a-fA-F]{2})/g) || [];
-    for (const h of hexes) {
-      bytes.push(parseInt(h.slice(2), 16));
-    }
-    try {
-      const decoder = new TextDecoder(enc);
-      return decoder.decode(new Uint8Array(bytes));
-    } catch (e) {
-      return bytes.map(b => String.fromCharCode(b)).join("");
-    }
   });
 
   return replaced;
