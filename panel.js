@@ -244,23 +244,36 @@ function initURL() {
 function encodeURL(str, charset = "utf-8", letterCase = "upper") {
   if (!str) return "";
 
-  let encoded = "";
+  let bytes;
 
   if (charset === "utf-8") {
-    // UTF-8: 標準のencodeURIComponentを使用
-    encoded = encodeURIComponent(str);
+    // UTF-8: 標準のTextEncoderを使用
+    const encoder = new TextEncoder();
+    bytes = encoder.encode(str);
+  } else if (typeof Encoding !== 'undefined') {
+    // Shift-JIS, EUC-JP: encoding-javascriptライブラリを使用
+    const unicodeArray = [];
+    for (let i = 0; i < str.length; i++) {
+      unicodeArray.push(str.charCodeAt(i));
+    }
+
+    const encodingType = charset.toUpperCase().replace('-', '');
+    bytes = Encoding.convert(unicodeArray, {
+      to: encodingType,
+      from: 'UNICODE'
+    });
   } else {
-    // その他のエンコーディング: バイト単位でエンコード
-    // ブラウザはShift-JISなどのエンコーディングを直接サポートしていないため
-    // UTF-8としてエンコードし、注意書きを追加
-    // 実際のShift-JISエンコーディングはサーバーサイドで行う必要があります
-    encoded = encodeURIComponent(str);
-    console.warn(`${charset} encoding is not fully supported in browser. Using UTF-8.`);
+    // ライブラリが読み込まれていない場合はUTF-8にフォールバック
+    console.warn(`Encoding library not loaded. Falling back to UTF-8.`);
+    const encoder = new TextEncoder();
+    bytes = encoder.encode(str);
   }
 
-  // 大文字/小文字変換
-  if (letterCase === "lower") {
-    encoded = encoded.replace(/%[0-9A-F]{2}/g, match => match.toLowerCase());
+  // バイト配列をパーセントエンコーディングに変換
+  let encoded = "";
+  for (let i = 0; i < bytes.length; i++) {
+    const hex = bytes[i].toString(16).padStart(2, '0');
+    encoded += "%" + (letterCase === "upper" ? hex.toUpperCase() : hex);
   }
 
   return encoded;
@@ -270,10 +283,39 @@ function decodeURL(str, charset = "utf-8") {
   if (!str) return "";
 
   try {
-    // 大文字・小文字両方に対応
-    return decodeURIComponent(str);
+    if (charset === "utf-8") {
+      // UTF-8: 標準のdecodeURIComponentを使用
+      return decodeURIComponent(str);
+    } else if (typeof Encoding !== 'undefined') {
+      // Shift-JIS, EUC-JP: パーセントエンコーディングをバイト配列に変換
+      const bytes = [];
+      const matches = str.match(/%[0-9a-fA-F]{2}|./g) || [];
+
+      for (const match of matches) {
+        if (match.startsWith('%')) {
+          bytes.push(parseInt(match.slice(1), 16));
+        } else {
+          // パーセントエンコードされていない文字はそのまま
+          bytes.push(match.charCodeAt(0));
+        }
+      }
+
+      // バイト配列を指定された文字コードからUnicodeに変換
+      const encodingType = charset.toUpperCase().replace('-', '');
+      const unicodeArray = Encoding.convert(bytes, {
+        to: 'UNICODE',
+        from: encodingType
+      });
+
+      // Unicode配列を文字列に変換
+      return Encoding.codeToString(unicodeArray);
+    } else {
+      // ライブラリが読み込まれていない場合はUTF-8にフォールバック
+      console.warn(`Encoding library not loaded. Falling back to UTF-8.`);
+      return decodeURIComponent(str);
+    }
   } catch (e) {
-    throw new Error("Invalid URL encoding");
+    throw new Error("Invalid URL encoding: " + e.message);
   }
 }
 
