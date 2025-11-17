@@ -103,16 +103,20 @@ function initUnicode() {
   encodeBtn.addEventListener("click", () => {
     try {
       output.textContent = encodeUnicode(input.value, target.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 
   decodeBtn.addEventListener("click", () => {
     try {
       output.textContent = decodeUnicode(input.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 }
@@ -198,16 +202,20 @@ function initURL() {
   encodeBtn.addEventListener("click", () => {
     try {
       output.textContent = encodeURL(input.value, charset.value, caseOption.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 
   decodeBtn.addEventListener("click", () => {
     try {
       output.textContent = decodeURL(input.value, charset.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 }
@@ -303,8 +311,10 @@ function initBase64() {
     try {
       const encoded = btoa(unescape(encodeURIComponent(input.value)));
       output.textContent = encoded;
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 
@@ -312,8 +322,10 @@ function initBase64() {
     try {
       const decoded = decodeURIComponent(escape(atob(input.value)));
       output.textContent = decoded;
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 }
@@ -330,16 +342,20 @@ function initHTML() {
   encodeBtn.addEventListener("click", () => {
     try {
       output.textContent = encodeHTML(input.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 
   decodeBtn.addEventListener("click", () => {
     try {
       output.textContent = decodeHTML(input.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 }
@@ -372,8 +388,10 @@ function initJSON() {
     try {
       const parsed = JSON.parse(input.value);
       output.textContent = JSON.stringify(parsed, null, 2);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 
@@ -381,16 +399,20 @@ function initJSON() {
     try {
       const parsed = JSON.parse(input.value);
       output.textContent = JSON.stringify(parsed);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 
   escapeBtn.addEventListener("click", () => {
     try {
       output.textContent = JSON.stringify(input.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 }
@@ -408,16 +430,20 @@ function initHex() {
   encodeBtn.addEventListener("click", () => {
     try {
       output.textContent = encodeHex(input.value, delimiter.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 
   decodeBtn.addEventListener("click", () => {
     try {
       output.textContent = decodeHex(input.value);
+      output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
     }
   });
 }
