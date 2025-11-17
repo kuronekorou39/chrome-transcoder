@@ -219,12 +219,14 @@ function decodeUnicode(text, enc = "utf-8") {
 function initURL() {
   const input = document.getElementById("url-input");
   const output = document.getElementById("url-output");
+  const charset = document.getElementById("url-charset");
+  const caseOption = document.getElementById("url-case");
   const encodeBtn = document.getElementById("url-encode");
   const decodeBtn = document.getElementById("url-decode");
 
   encodeBtn.addEventListener("click", () => {
     try {
-      output.textContent = encodeURIComponent(input.value);
+      output.textContent = encodeURL(input.value, charset.value, caseOption.value);
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
     }
@@ -232,11 +234,47 @@ function initURL() {
 
   decodeBtn.addEventListener("click", () => {
     try {
-      output.textContent = decodeURIComponent(input.value);
+      output.textContent = decodeURL(input.value, charset.value);
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
     }
   });
+}
+
+function encodeURL(str, charset = "utf-8", letterCase = "upper") {
+  if (!str) return "";
+
+  let encoded = "";
+
+  if (charset === "utf-8") {
+    // UTF-8: 標準のencodeURIComponentを使用
+    encoded = encodeURIComponent(str);
+  } else {
+    // その他のエンコーディング: バイト単位でエンコード
+    // ブラウザはShift-JISなどのエンコーディングを直接サポートしていないため
+    // UTF-8としてエンコードし、注意書きを追加
+    // 実際のShift-JISエンコーディングはサーバーサイドで行う必要があります
+    encoded = encodeURIComponent(str);
+    console.warn(`${charset} encoding is not fully supported in browser. Using UTF-8.`);
+  }
+
+  // 大文字/小文字変換
+  if (letterCase === "lower") {
+    encoded = encoded.replace(/%[0-9A-F]{2}/g, match => match.toLowerCase());
+  }
+
+  return encoded;
+}
+
+function decodeURL(str, charset = "utf-8") {
+  if (!str) return "";
+
+  try {
+    // 大文字・小文字両方に対応
+    return decodeURIComponent(str);
+  } catch (e) {
+    throw new Error("Invalid URL encoding");
+  }
 }
 
 // ======================

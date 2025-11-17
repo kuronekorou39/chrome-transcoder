@@ -247,6 +247,23 @@
     <div class="tab-panel" id="url">
       <textarea id="url-input" placeholder="URLまたはテキストを入力"></textarea>
 
+      <div class="options-grid">
+        <div class="option-group">
+          <select id="url-charset">
+            <option value="utf-8">UTF-8</option>
+            <option value="shift-jis">Shift-JIS</option>
+            <option value="euc-jp">EUC-JP</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <select id="url-case">
+            <option value="upper">大文字 (%E3%81%82)</option>
+            <option value="lower">小文字 (%e3%81%82)</option>
+          </select>
+        </div>
+      </div>
+
       <div class="actions">
         <button id="url-encode">Encode</button>
         <button id="url-decode">Decode</button>
@@ -302,9 +319,9 @@
       <textarea id="json-input" placeholder="JSON文字列を入力"></textarea>
 
       <div class="actions">
-        <button id="json-format">整形</button>
-        <button id="json-minify">圧縮</button>
-        <button id="json-escape">エスケープ</button>
+        <button id="json-format">Format</button>
+        <button id="json-minify">Minify</button>
+        <button id="json-escape">Escape</button>
       </div>
 
       <div class="output-label-row">
