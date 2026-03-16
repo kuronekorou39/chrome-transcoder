@@ -239,18 +239,19 @@ function encodeURL(str, target = "all", charset = "utf-8", letterCase = "upper")
 
   function shouldEncode(char) {
     const code = char.codePointAt(0);
-    // RFC 3986 unreserved characters: これ以外はURLパラメータでは常にエンコードが必要
-    const isUnreserved = /[a-zA-Z0-9\-_.~]/.test(char);
+    // 空白・制御文字 (スペース, 改行, タブ等) はフィルタに関係なく常にエンコード
+    const isControl = code <= 0x20 || code === 0x7F;
 
     switch (target) {
       case "all":
         return true;
       case "non-ascii":
-        return code >= 0x80 || !isUnreserved;
+        return code >= 0x80 || isControl;
       case "japanese":
         return (code >= 0x3040 && code <= 0x309F) ||
                (code >= 0x30A0 && code <= 0x30FF) ||
-               (code >= 0x4E00 && code <= 0x9FFF);
+               (code >= 0x4E00 && code <= 0x9FFF) ||
+               isControl;
       case "non-alnum":
         return !/[a-zA-Z0-9]/.test(char);
       default:
