@@ -250,8 +250,7 @@ function encodeURL(str, target = "all", charset = "utf-8", letterCase = "upper")
       case "japanese":
         return (code >= 0x3040 && code <= 0x309F) ||
                (code >= 0x30A0 && code <= 0x30FF) ||
-               (code >= 0x4E00 && code <= 0x9FFF) ||
-               !isUnreserved;
+               (code >= 0x4E00 && code <= 0x9FFF);
       case "non-alnum":
         return !/[a-zA-Z0-9]/.test(char);
       default:
