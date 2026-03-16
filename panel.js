@@ -418,6 +418,7 @@ function initJSON() {
   const formatBtn = document.getElementById("json-format");
   const minifyBtn = document.getElementById("json-minify");
   const escapeBtn = document.getElementById("json-escape");
+  const unescapeBtn = document.getElementById("json-unescape");
 
   formatBtn.addEventListener("click", () => {
     try {
@@ -444,6 +445,28 @@ function initJSON() {
   escapeBtn.addEventListener("click", () => {
     try {
       output.textContent = JSON.stringify(input.value);
+      output.classList.remove("error");
+    } catch (e) {
+      output.textContent = `Error: ${e.message}`;
+      output.classList.add("error");
+    }
+  });
+
+  unescapeBtn.addEventListener("click", () => {
+    try {
+      let str = input.value.trim();
+      // 前後の引用符があれば除去してJSON文字列としてパース
+      if (!str.startsWith('"')) {
+        str = '"' + str + '"';
+      }
+      const unescaped = JSON.parse(str);
+      // パース結果がJSONとして有効ならさらに整形
+      try {
+        const parsed = JSON.parse(unescaped);
+        output.textContent = JSON.stringify(parsed, null, 2);
+      } catch {
+        output.textContent = unescaped;
+      }
       output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
