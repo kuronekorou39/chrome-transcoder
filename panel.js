@@ -207,6 +207,7 @@ function decodeUnicode(text) {
 function initURL() {
   const input = document.getElementById("url-input");
   const output = document.getElementById("url-output");
+  const target = document.getElementById("url-target");
   const charset = document.getElementById("url-charset");
   const caseOption = document.getElementById("url-case");
   const encodeBtn = document.getElementById("url-encode");
@@ -214,7 +215,7 @@ function initURL() {
 
   encodeBtn.addEventListener("click", () => {
     try {
-      output.textContent = encodeURL(input.value, charset.value, caseOption.value);
+      output.textContent = encodeURL(input.value, target.value, charset.value, caseOption.value);
       output.classList.remove("error");
     } catch (e) {
       output.textContent = `Error: ${e.message}`;
@@ -233,42 +234,66 @@ function initURL() {
   });
 }
 
-function encodeURL(str, charset = "utf-8", letterCase = "upper") {
+function encodeURL(str, target = "all", charset = "utf-8", letterCase = "upper") {
   if (!str) return "";
 
-  let bytes;
-
-  if (charset === "utf-8") {
-    // UTF-8: 標準のTextEncoderを使用
-    const encoder = new TextEncoder();
-    bytes = encoder.encode(str);
-  } else if (typeof Encoding !== 'undefined') {
-    // Shift-JIS, EUC-JP: encoding-javascriptライブラリを使用
-    const unicodeArray = [];
-    for (let i = 0; i < str.length; i++) {
-      unicodeArray.push(str.charCodeAt(i));
+  function shouldEncode(char) {
+    const code = char.codePointAt(0);
+    switch (target) {
+      case "all":
+        return true;
+      case "non-ascii":
+        return code >= 0x80;
+      case "japanese":
+        return (code >= 0x3040 && code <= 0x309F) ||
+               (code >= 0x30A0 && code <= 0x30FF) ||
+               (code >= 0x4E00 && code <= 0x9FFF);
+      case "non-alnum":
+        return !/[a-zA-Z0-9]/.test(char);
+      default:
+        return true;
     }
-
-    const encodingType = charset.toUpperCase().replace('-', '');
-    bytes = Encoding.convert(unicodeArray, {
-      to: encodingType,
-      from: 'UNICODE'
-    });
-  } else {
-    // ライブラリが読み込まれていない場合はUTF-8にフォールバック
-    console.warn(`Encoding library not loaded. Falling back to UTF-8.`);
-    const encoder = new TextEncoder();
-    bytes = encoder.encode(str);
   }
 
-  // バイト配列をパーセントエンコーディングに変換
-  let encoded = "";
-  for (let i = 0; i < bytes.length; i++) {
-    const hex = bytes[i].toString(16).padStart(2, '0');
-    encoded += "%" + (letterCase === "upper" ? hex.toUpperCase() : hex);
+  function percentEncode(bytes, letterCase) {
+    let encoded = "";
+    for (let i = 0; i < bytes.length; i++) {
+      const hex = bytes[i].toString(16).padStart(2, '0');
+      encoded += "%" + (letterCase === "upper" ? hex.toUpperCase() : hex);
+    }
+    return encoded;
   }
 
-  return encoded;
+  function encodeChar(char, charset, letterCase) {
+    if (charset === "utf-8") {
+      const encoder = new TextEncoder();
+      return percentEncode(encoder.encode(char), letterCase);
+    } else if (typeof Encoding !== 'undefined') {
+      const unicodeArray = [];
+      for (let i = 0; i < char.length; i++) {
+        unicodeArray.push(char.charCodeAt(i));
+      }
+      const encodingType = charset.toUpperCase().replace('-', '');
+      const bytes = Encoding.convert(unicodeArray, {
+        to: encodingType,
+        from: 'UNICODE'
+      });
+      return percentEncode(bytes, letterCase);
+    } else {
+      const encoder = new TextEncoder();
+      return percentEncode(encoder.encode(char), letterCase);
+    }
+  }
+
+  let result = "";
+  for (const char of str) {
+    if (shouldEncode(char)) {
+      result += encodeChar(char, charset, letterCase);
+    } else {
+      result += char;
+    }
+  }
+  return result;
 }
 
 function decodeURL(str, charset = "utf-8") {
@@ -276,10 +301,8 @@ function decodeURL(str, charset = "utf-8") {
 
   try {
     if (charset === "utf-8") {
-      // UTF-8: 標準のdecodeURIComponentを使用
       return decodeURIComponent(str);
     } else if (typeof Encoding !== 'undefined') {
-      // Shift-JIS, EUC-JP: パーセントエンコーディングをバイト配列に変換
       const bytes = [];
       const matches = str.match(/%[0-9a-fA-F]{2}|./g) || [];
 
@@ -287,23 +310,18 @@ function decodeURL(str, charset = "utf-8") {
         if (match.startsWith('%')) {
           bytes.push(parseInt(match.slice(1), 16));
         } else {
-          // パーセントエンコードされていない文字はそのまま
           bytes.push(match.charCodeAt(0));
         }
       }
 
-      // バイト配列を指定された文字コードからUnicodeに変換
       const encodingType = charset.toUpperCase().replace('-', '');
       const unicodeArray = Encoding.convert(bytes, {
         to: 'UNICODE',
         from: encodingType
       });
 
-      // Unicode配列を文字列に変換
       return Encoding.codeToString(unicodeArray);
     } else {
-      // ライブラリが読み込まれていない場合はUTF-8にフォールバック
-      console.warn(`Encoding library not loaded. Falling back to UTF-8.`);
       return decodeURIComponent(str);
     }
   } catch (e) {

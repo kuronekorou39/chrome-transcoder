@@ -240,20 +240,27 @@
 
       <div class="options-grid">
         <div class="option-group">
+          <select id="url-target">
+            <option value="all">すべての文字</option>
+            <option value="non-ascii" selected>ASCII以外</option>
+            <option value="japanese">日本語のみ</option>
+            <option value="non-alnum">英数字以外</option>
+          </select>
+        </div>
+
+        <div class="option-group">
           <select id="url-charset">
             <option value="utf-8">UTF-8</option>
             <option value="shift-jis">Shift-JIS</option>
             <option value="euc-jp">EUC-JP</option>
           </select>
         </div>
-
-        <div class="option-group">
-          <select id="url-case">
-            <option value="upper">大文字 (%E3%81%82)</option>
-            <option value="lower">小文字 (%e3%81%82)</option>
-          </select>
-        </div>
       </div>
+
+      <select id="url-case">
+        <option value="upper">大文字 (%E3%81%82)</option>
+        <option value="lower">小文字 (%e3%81%82)</option>
+      </select>
 
       <div class="actions">
         <button id="url-encode">Encode</button>
